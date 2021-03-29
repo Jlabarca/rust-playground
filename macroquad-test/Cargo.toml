@@ -1,0 +1,11 @@
+[package]
+name = "macroquad-test"
+version = "0.1.0"
+authors = ["jlabarca"]
+edition = "2018"
+
+[[example]]
+name = "arkanoid" # src/arkanoid.rs
+
+[dependencies]
+macroquad = "0.3.0-alpha.15"
