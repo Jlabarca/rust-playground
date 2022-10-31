@@ -37,16 +37,17 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     add_dots((-12.0, -12.0), 12, &mut dots);
     add_dots((12.0, 12.0), 56, &mut dots);
     add_dots((12.0, -12.0), 100, &mut dots);
+    add_dots((0.0, 0.0), 1000, &mut dots);
 
     for dot in dots.iter().cloned() {
         println!("({}, {})", dot.0, dot.1);
     }
 
     //And we can draw something in the drawing area
-    chart.draw_series(LineSeries::new(
-        dots.iter().cloned(),
-        &RED,
-    ))?;
+    // chart.draw_series(LineSeries::new(
+    //     dots.iter().cloned(),
+    //     &RED,
+    // ))?;
     //Similarly, we can draw point series
     chart.draw_series(PointSeries::of_element(
         dots.iter().cloned(),
@@ -68,18 +69,26 @@ fn add_dots(position: (f32, f32), total: usize, dots: &mut Vec<(f32, f32)>)  {
     let desface = 22.0f32;
     let phi = ( 1.0 + desface.sqrt() ) / 2.0;
 	let totalf32 = total as f32;
-    let grow_ratio = totalf32/50.;
+    let grow_ratio = 1.0;
+    let growSizeRelation = 0.2;
+    let mut growReductionBySize = growSizeRelation * totalf32;
+    // growReductionBySize = if growReductionBySize > grow_ratio {
+    //     0.1
+    // } else {
+    //     growReductionBySize
+    // };
+
+    let growRatio = totalf32 / ( 10. + growReductionBySize);
 
     for i in 0..total {
 
         let if32 = ( -(total as i16) as f32 + 1. + 2. * i as  f32) as f32;
 
 		let theta = 2.0 * pi * if32 / phi;
-        let	cphi = grow_ratio * ( ( totalf32 + if32 ) * ( totalf32 - if32 ) ).sqrt() / totalf32;
+        let	cphi = growRatio * ( ( totalf32 + if32 ) * ( totalf32 - if32 ) ).sqrt() / totalf32;
         let dot = (position.0 + cphi * theta.sin(), position.1 + cphi * theta.cos());
 
         //println!("({}, {})", dot.0, dot.1);
-        // //!("{}", lin);
         dots.push(dot);
     }
 }
